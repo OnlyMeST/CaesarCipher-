@@ -2,18 +2,14 @@ import collections
 import re
 
 def calculate_ioc(text):
-    """
-    Calculate the Index of Coincidence for a given text.
-    """
+    #Calculate index of coincidence
     total_chars = len(text)
     char_freq = collections.Counter(text)
     ioc = sum(freq * (freq - 1) for freq in char_freq.values()) / (total_chars * (total_chars - 1))
     return ioc
 
 def find_key_length(ciphertext, max_length=20):
-    """
-    Use Kasiski's method to find potential key lengths.
-    """
+    #Find potential key length by trial
     repeated_sequences = {}
     
     # Find repeated sequences in the ciphertext
@@ -32,24 +28,18 @@ def find_key_length(ciphertext, max_length=20):
         for d in distances[1:]:
             gcd = _calculate_gcd(gcd, d)
         potential_lengths.append((length, gcd))
-
-    # Sort by the GCD in descending order
     potential_lengths.sort(key=lambda x: x[1], reverse=True)
 
     return potential_lengths
 
 def _calculate_gcd(a, b):
-    """
-    Calculate the Greatest Common Divisor (GCD) of two numbers.
-    """
+    #calculate remainder via modulus method
     while b:
         a, b = b, a % b
     return a
 
 def decrypt_vigenere(ciphertext, key_length):
-    """
-    Decrypt the Vigenère ciphertext using the given key length.
-    """
+    #Decrypt
     key = ''
     for i in range(key_length):
         ith_column = ciphertext[i::key_length]
@@ -63,10 +53,9 @@ def decrypt_vigenere(ciphertext, key_length):
 
     return decrypted_text, key
 
-# Example usage:
-ciphertext = "YOURVIGENERECIPHERTEXTHERE"
+ciphertext = "POILIEIWSAGJEKIWOFPLGIYMKYIMHYKRFZRIPSYHRZWWWLBTKAKGOIJXHPRXAPAFTDGLBOGUBPGNRQBKWABAPPSMHUAHBWHMDAEQTAZQCBVGIBNLUDMEIBYKPBSLEQ"
 potential_key_lengths = find_key_length(ciphertext)
-most_probable_length = potential_key_lengths[0][0]  # Assuming the first one is the most probable
+most_probable_length = potential_key_lengths[0][0] 
 decrypted_text, key = decrypt_vigenere(ciphertext, most_probable_length)
 
 print("Potential key lengths:", [length[0] for length in potential_key_lengths])
